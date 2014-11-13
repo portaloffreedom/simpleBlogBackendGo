@@ -13,6 +13,7 @@ var (
 	db        *mgo.Database
 )
 
+// DatabaseError data structure for database error
 type DatabaseError struct {
 	When time.Time
 	What string
