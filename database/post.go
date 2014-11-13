@@ -40,7 +40,7 @@ func ReadAllPosts() ([]Post, error) {
 }
 
 // ReadPost read all the posts in the database
-func ReadPost(id string) (*Post, error) {
+func ReadPost(id string) (*Post, *DatabaseError) {
 	if !bson.IsObjectIdHex(id) {
 		return nil, &DatabaseError{
 			time.Now(),
@@ -51,7 +51,12 @@ func ReadPost(id string) (*Post, error) {
 	var result Post
 	err := db.C("posts").FindId(realID).One(&result)
 	//err := c.Find(bson.M{"name": "Ale"}).One(&result)
-	checkError(err)
+	if checkError(err) {
+		return nil, &DatabaseError{
+			time.Now(),
+			err.Error(),
+		}
+	}
 
-	return &result, err
+	return &result, nil
 }

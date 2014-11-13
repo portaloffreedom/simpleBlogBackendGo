@@ -23,8 +23,21 @@ func ReadPostHandler(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 
 	//id := r.FormValue("id")
-	post, _ := database.ReadPost(id)
-	writeJSON(w, post)
+	post, err := database.ReadPost(id)
+	if err != nil {
+		var netErr *NetworkError
+		if err.What == "invalid ID" {
+			netErr = &NetworkError{
+				http.StatusBadRequest,
+				"invalid_id",
+				err.When,
+				err.What,
+			}
+		}
+		writeError(w, netErr)
+	} else {
+		writeJSON(w, post)
+	}
 }
 
 // WritePostHandler is the handler for writing a post

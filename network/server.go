@@ -10,8 +10,10 @@ import (
 )
 
 type NetworkError struct {
-	When time.Time
-	What string
+	status int
+	Code   string
+	When   time.Time
+	What   string
 }
 
 func (e *NetworkError) Error() string {
@@ -34,6 +36,21 @@ func StartServer() {
 func writeJSON(w http.ResponseWriter, data interface{}) {
 	jsonResponse, _ := json.Marshal(data)
 	w.Header().Set("Content-Type", "text/json; charset=utf-8")
+	w.Write(jsonResponse)
+}
+
+func writeError(w http.ResponseWriter, err *NetworkError) {
+	if err == nil {
+		err = &NetworkError{
+			http.StatusInternalServerError,
+			"generic_error",
+			time.Now(),
+			"Generic Error Occoured",
+		}
+	}
+	jsonResponse, _ := json.Marshal(err)
+	w.Header().Set("Content-Type", "text/json; charset=utf-8")
+	w.WriteHeader(err.status)
 	w.Write(jsonResponse)
 }
 
