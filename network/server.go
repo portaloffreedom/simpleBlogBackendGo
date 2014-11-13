@@ -3,6 +3,7 @@ package network
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -22,7 +23,7 @@ func (e *NetworkError) Error() string {
 }
 
 // StartServer stars an http server
-func StartServer() {
+func StartServer(bindAddress string) {
 	r := mux.NewRouter()
 	r.HandleFunc("/", HomeHandler)
 	r.HandleFunc("/read", ReadAllPostsHandler)
@@ -30,7 +31,11 @@ func StartServer() {
 	r.HandleFunc("/write", WritePostHandler)
 	http.Handle("/", r)
 
-	http.ListenAndServe("localhost:4000", nil)
+	fmt.Printf("listening on %s...", bindAddress)
+	err := http.ListenAndServe(bindAddress, nil)
+	if err != nil {
+		log.Fatal("Error listening to the port: " + err.Error())
+	}
 }
 
 func writeJSON(w http.ResponseWriter, data interface{}) {
