@@ -1,10 +1,7 @@
 // Package config managing config file loading
 package config
 
-import (
-	"encoding/json"
-	"io/ioutil"
-)
+import "os"
 
 type (
 	// Mongo config for MongoDB connection
@@ -27,17 +24,19 @@ type (
 	}
 )
 
-const configPath string = "config/config.json"
+var Conf *Config
 
-// ReadConfig read the config of the file
-func ReadConfig() (*Config, error) {
-	content, err := ioutil.ReadFile(configPath)
-	if err != nil {
-		return nil, err
-	}
-	var conf Config
+// LoadConfig read the config of the file
+func LoadConfig() *Config {
+	Conf = &Config{}
 
-	err = json.Unmarshal(content, &conf)
+	Conf.Mongo.MongoUser = os.Getenv("OPENSHIFT_MONGODB_DB_USERNAME")
+	Conf.Mongo.MongoPasswd = os.Getenv("OPENSHIFT_MONGODB_DB_PASSWORD")
+	Conf.Mongo.DBName = "blog"
+	Conf.Mongo.MongoHost = os.Getenv("OPENSHIFT_MONGODB_DB_HOST")
+	Conf.Mongo.MongoPort = os.Getenv("OPENSHIFT_MONGODB_DB_PORT")
+	Conf.HTTP.BindAddress = os.Getenv("HOST")
+	Conf.HTTP.BindPort = os.Getenv("PORT")
 
-	return &conf, nil
+	return Conf
 }

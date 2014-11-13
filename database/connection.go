@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/portaloffreedom/simpleBlogBackendGo/config"
 	"gopkg.in/mgo.v2"
 )
 
@@ -33,7 +34,7 @@ func checkError(err error) bool {
 
 // Connect to the database
 func Connect(url string) {
-	log.Print("Trying connection")
+	log.Print("Trying to connect to the database: " + url)
 
 	session, err := mgo.Dial(url)
 	dbSession = session
@@ -53,11 +54,14 @@ func Connect(url string) {
 			"\nSysInfo: " + info.SysInfo)
 	}
 
-	db = dbSession.DB("blog")
+	db = dbSession.DB(config.Conf.Mongo.DBName)
+	log.Print("connection to database established")
 }
 
 // Disconnect from the database
 func Disconnect() {
 	dbSession.Close()
+	dbSession = nil
+	db = nil
 	log.Print("Connection closed")
 }

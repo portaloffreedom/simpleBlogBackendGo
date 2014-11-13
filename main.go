@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/portaloffreedom/simpleBlogBackendGo/config"
 	"github.com/portaloffreedom/simpleBlogBackendGo/database"
@@ -12,23 +11,7 @@ import (
 
 func main() {
 	log.Print("Hello, 世界")
-	conf, err := config.ReadConfig()
-	if err != nil {
-		log.Fatal("error reading config file: " + err.Error())
-	}
-
-	if conf.Mongo.MongoHost == "" {
-		conf.Mongo.MongoHost = os.Getenv("OPENSHIFT_MONGODB_DB_HOST")
-	}
-	if conf.Mongo.MongoPort == "" {
-		conf.Mongo.MongoPort = os.Getenv("OPENSHIFT_MONGODB_DB_PORT")
-	}
-	if conf.HTTP.BindAddress == "" {
-		conf.HTTP.BindAddress = os.Getenv("HOST")
-	}
-	if conf.HTTP.BindPort == "" {
-		conf.HTTP.BindPort = os.Getenv("PORT")
-	}
+	conf := config.LoadConfig()
 
 	var dbAuth string
 	if conf.Mongo.MongoUser != "" && conf.Mongo.MongoPasswd != "" {
@@ -36,7 +19,6 @@ func main() {
 	}
 
 	dbAddress := fmt.Sprintf("mongodb://%s%s:%s", dbAuth, conf.Mongo.MongoHost, conf.Mongo.MongoPort)
-	log.Print("trying to connect to " + dbAddress)
 	database.Connect(dbAddress)
 
 	bind := fmt.Sprintf("%s:%s", conf.HTTP.BindAddress, conf.HTTP.BindPort)
