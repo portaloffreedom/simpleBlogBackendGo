@@ -26,10 +26,25 @@ func ReadPostHandler(w http.ResponseWriter, r *http.Request) {
 	post, err := database.ReadPost(id)
 	if err != nil {
 		var netErr *NetworkError
-		if err.What == "invalid ID" {
+		switch err.What {
+		case "invalid ID":
 			netErr = &NetworkError{
 				http.StatusBadRequest,
 				"invalid_id",
+				err.When,
+				err.What,
+			}
+		case "not found":
+			netErr = &NetworkError{
+				http.StatusNotFound,
+				"not_found",
+				err.When,
+				err.What,
+			}
+		default:
+			netErr = &NetworkError{
+				http.StatusInternalServerError,
+				"generic_error",
 				err.When,
 				err.What,
 			}
