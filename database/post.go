@@ -10,10 +10,10 @@ import (
 // Post the structure thats represents the post data
 //   saved values must start with a capitalized letter
 type Post struct {
-	ID      bson.ObjectId `bson:"_id,omitempty"`
-	Title   string
-	Body    string
-	Created time.Time
+	ID      bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	Title   string        `bson:"title"         json:"title"`
+	Body    string        `bson:"body"          json:"body"`
+	Created time.Time     `bson:"created"       json:"created"`
 }
 
 // WritePost writes a post in the database
@@ -35,6 +35,10 @@ func ReadAllPosts() ([]Post, error) {
 	var results []Post
 	err := db.C("posts").Find(nil).All(&results)
 	checkError(err)
+
+	if results == nil {
+		results = []Post{}
+	}
 
 	return results, err
 }

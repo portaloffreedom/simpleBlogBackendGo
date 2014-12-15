@@ -11,9 +11,6 @@ import (
 // ReadAllPostsHandler is the handler for reading all the posts
 func ReadAllPostsHandler(w http.ResponseWriter, r *http.Request) {
 	posts, _ := database.ReadAllPosts()
-	for i := 0; i < len(posts); i++ {
-		fmt.Println("ID: " + string(posts[i].ID) + " - title: " + posts[i].Title + " - body: " + posts[i].Body)
-	}
 	writeJSON(w, posts)
 }
 
