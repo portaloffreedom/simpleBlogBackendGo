@@ -33,8 +33,8 @@ func LoadConfig() *Config {
 	Conf.Mongo.MongoUser = os.Getenv("OPENSHIFT_MONGODB_DB_USERNAME")
 	Conf.Mongo.MongoPasswd = os.Getenv("OPENSHIFT_MONGODB_DB_PASSWORD")
 	Conf.Mongo.DBName = "blog"
-	Conf.Mongo.MongoHost = os.Getenv("OPENSHIFT_MONGODB_DB_HOST")
-	Conf.Mongo.MongoPort = os.Getenv("OPENSHIFT_MONGODB_DB_PORT")
+	Conf.Mongo.MongoHost = os.Getenv("MONGO_PORT_27017_TCP_ADDR")
+	Conf.Mongo.MongoPort = os.Getenv("MONGO_PORT_27017_TCP_PORT")
 	Conf.HTTP.BindAddress = os.Getenv("HOST")
 	Conf.HTTP.BindPort = os.Getenv("PORT")
 

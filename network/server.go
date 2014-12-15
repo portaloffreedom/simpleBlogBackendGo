@@ -41,6 +41,7 @@ func StartServer(bindAddress string) {
 func writeJSON(w http.ResponseWriter, data interface{}) {
 	jsonResponse, _ := json.Marshal(data)
 	w.Header().Set("Content-Type", "text/json; charset=utf-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Write(jsonResponse)
 }
 
